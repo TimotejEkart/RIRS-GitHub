@@ -58,6 +58,9 @@ class VajaMisica(models.Model):
         verbose_name_plural = "mišice vaje"
         constraints = [models.UniqueConstraint(fields=["vaja", "misica"], name="vaja_misica_enkrat")]
 
+    def __str__(self):
+        return f"{self.vaja} – {self.misica} ({self.get_tip_display()})"
+
 
 class Trening(models.Model):
     """Dejansko opravljen trening (docs/03). Povezava na planirani trening se doda s plani (US-06)."""
@@ -83,3 +86,6 @@ class Serija(models.Model):
 
     class Meta:
         ordering = ["zaporedna_st"]
+
+    def __str__(self):
+        return f"{self.vaja}: {self.ponovitve} × {self.teza_kg:g} kg"

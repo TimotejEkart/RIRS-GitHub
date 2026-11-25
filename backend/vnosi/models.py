@@ -22,6 +22,9 @@ class Vnos(models.Model):
     kolicina = models.FloatField()
     opis = models.CharField(max_length=200, blank=True)
 
+    def __str__(self):
+        return f"{self.get_tip_display()} {self.kolicina:g}"
+
 
 class DnevniCilj(models.Model):
     """Dnevni cilj kalorij in vode (docs/03, ADR-0003). Stari cilji se hranijo za pretekle dni."""
@@ -38,6 +41,9 @@ class DnevniCilj(models.Model):
     voda_ml = models.PositiveIntegerField()
     velja_od = models.DateField()
     status = models.CharField(max_length=10, choices=Status)
+
+    def __str__(self):
+        return f"{self.kcal} kcal, {self.voda_ml} ml od {self.velja_od:%d. %m. %Y}"
 
 
 def cilj_za_dan(sportnik, dan):
@@ -77,3 +83,6 @@ class Komentar(models.Model):
                 name="komentar_na_trening_ali_vnos",
             )
         ]
+
+    def __str__(self):
+        return self.besedilo[:50]
