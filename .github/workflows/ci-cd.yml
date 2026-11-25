@@ -70,3 +70,63 @@ jobs:
           name: aplikacija
           path: paket/
           retention-days: 7
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: karrabimzagym
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DJANGO_SECRET_KEY: samo-za-teste
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/karrabimzagym
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            backend/requirements.txt
+            backend/requirements-dev.txt
+
+      - name: Testi backenda s pokritostjo
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt -r requirements-dev.txt
+          coverage run manage.py test
+          coverage report
+          coverage html -d coverage-html
+          coverage xml
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Testi frontenda s pokritostjo
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run test:coverage
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pokritost-testov
+          path: |
+            backend/coverage-html/
+            backend/coverage.xml
+            frontend/coverage/
+          retention-days: 7

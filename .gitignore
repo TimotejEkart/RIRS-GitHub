@@ -24,3 +24,9 @@ node_modules/
 
 # zbrane statične datoteke (collectstatic)
 backend/staticfiles/
+
+# poročila o pokritosti testov
+backend/.coverage
+backend/coverage-html/
+backend/coverage.xml
+frontend/coverage/

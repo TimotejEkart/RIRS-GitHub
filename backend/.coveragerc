@@ -1,0 +1,13 @@
+[run]
+source = .
+omit =
+    venv/*
+    */migrations/*
+    */tests.py
+    */test_*.py
+    manage.py
+    karrabimzagym/asgi.py
+    karrabimzagym/wsgi.py
+
+[report]
+skip_empty = true
