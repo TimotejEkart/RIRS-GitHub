@@ -26,3 +26,6 @@ class Dostop(models.Model):
     vrsta = models.CharField(max_length=30, choices=Vrsta)
     status = models.CharField(max_length=20, choices=Status, default=Status.POVABLJEN)
     ustvarjen = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.strokovnjak} → {self.sportnik} ({self.get_vrsta_display()})"
