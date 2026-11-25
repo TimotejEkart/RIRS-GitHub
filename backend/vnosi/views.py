@@ -21,7 +21,7 @@ PRETEKLI_DNEVI = 7
 
 
 def litri(ml):
-    return f"{ml / 1000:g}".replace(".", ",") + " l"
+    return f"{ml / 1000:g}" + " l"
 
 
 def kalorije(kcal):
