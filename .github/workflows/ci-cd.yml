@@ -64,7 +64,7 @@ jobs:
           mkdir -p paket/frontend
           tar --exclude='__pycache__' --exclude='.env' --exclude='venv' --exclude='.ruff_cache' --exclude='tests.py' --exclude='test_*.py' -cf - backend | tar -xf - -C paket
           cp -r frontend/templates frontend/static paket/frontend/
-          cp deploy/railway.json deploy/start.sh deploy/.python-version paket/
+          cp -r deploy/. paket/
           cp backend/requirements.txt paket/requirements.txt
 
       - uses: actions/upload-artifact@v4
@@ -151,6 +151,7 @@ jobs:
         with:
           node-version: 22
 
+      # cli je zaklenjen na 5.2.0, ker novejše verzije ne sprejmejo project tokena
       - name: Deploy na Railway
         working-directory: paket
         env:
