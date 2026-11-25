@@ -64,11 +64,14 @@ jobs:
           mkdir -p paket/frontend
           tar --exclude='__pycache__' --exclude='.env' --exclude='venv' --exclude='.ruff_cache' --exclude='tests.py' --exclude='test_*.py' -cf - backend | tar -xf - -C paket
           cp -r frontend/templates frontend/static paket/frontend/
+          cp deploy/railway.json deploy/start.sh deploy/.python-version paket/
+          cp backend/requirements.txt paket/requirements.txt
 
       - uses: actions/upload-artifact@v4
         with:
           name: aplikacija
           path: paket/
+          include-hidden-files: true
           retention-days: 7
 
   test:
@@ -130,3 +133,26 @@ jobs:
             backend/coverage.xml
             frontend/coverage/
           retention-days: 7
+
+  deploy:
+    needs: [lint, build, test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://web-production-5bf2eaf8.up.railway.app
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: aplikacija
+          path: paket
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Deploy na Railway
+        working-directory: paket
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: npx -y @railway/cli@5.2.0 up --service web --ci
