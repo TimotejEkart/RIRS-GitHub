@@ -1,5 +1,9 @@
 # KarRabimZaGym
 
+[![CI/CD](https://github.com/TimotejEkart/RIRS-GitHub/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/TimotejEkart/RIRS-GitHub/actions/workflows/ci-cd.yml)
+
+Aplikacija: https://web-production-5bf2eaf8.up.railway.app
+
 Spletna aplikacija za beleženje napredka v fitnesu in za sodelovanje s trenerjem in prehranskim svetovalcem. Športnik beleži treninge (vaje, serije, porabljene kalorije), počutje ter vnos kalorij in vode. Trener in prehranski svetovalec imata, če jima športnik to dovoli, vpogled v njegove podatke in jih lahko komentirata. Trener lahko športniku predlaga plan treningov.
 
 ## Tehnologije
@@ -12,6 +16,19 @@ Spletna aplikacija za beleženje napredka v fitnesu in za sodelovanje s trenerje
 | Avtentikacija | vgrajen Django sistem za uporabnike |
 | Lokalni razvoj | Python, lokalno nameščen PostgreSQL, Git in GitHub |
 | Drugo | Django admin za administratorja |
+
+## CI/CD
+
+Pipeline je v `.github/workflows/ci-cd.yml` in teče ob vsakem pull requestu in pushu na `main`.
+
+1. **lint**: Ruff za backend in ESLint za frontend. Ob napaki pipeline pade.
+2. **build**: namestitev odvisnosti (s cachem), `manage.py check` in `collectstatic`. Aplikacija se zapakira in naloži kot artefakt `aplikacija`.
+3. **test**: backend testi (Django s PostgreSQL) in frontend testi (Vitest) s pokritostjo. Poročilo o pokritosti je artefakt `pokritost-testov`. Če pade kateri koli test, pade pipeline.
+4. **deploy**: samo ob pushu na `main`, ko so prvi trije uspešni. Artefakt iz builda se brez ponovnega builda naloži na Railway (environment `production`, token je v GitHub secrets).
+
+Na `main` je nastavljen branch protection: merge je mogoč samo prek pull requesta, ko so `lint`, `build` in `test` uspešni.
+
+Dodatni testi (Timotej Ekart): `backend/*/test_dodatni.py` (16 testov) in `frontend/tests/treningi.test.js` (8 testov). Frontend teste poženeš v mapi `frontend` z `npm install` in `npm test`.
 
 ## Dokumentacija
 
