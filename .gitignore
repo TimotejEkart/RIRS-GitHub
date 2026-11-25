@@ -21,3 +21,6 @@ desktop.ini
 
 # Node (ESLint, testi frontenda)
 node_modules/
+
+# zbrane statične datoteke (collectstatic)
+backend/staticfiles/
